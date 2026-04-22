@@ -3,6 +3,8 @@ import { VK } from "vk-io";
 
 import type { SchoolConfig } from "../config.js";
 
+const MAX_VK_RANDOM_ID = 2_147_483_647;
+
 export class VkBotGateway {
   private readonly apiBySchoolId = new Map<string, VK>();
 
@@ -28,7 +30,7 @@ export class VkBotGateway {
     await vk.api.messages.send({
       peer_id: peerId,
       message,
-      random_id: randomInt(1, Number.MAX_SAFE_INTEGER),
+      random_id: randomInt(1, MAX_VK_RANDOM_ID),
     });
   }
 }

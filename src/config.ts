@@ -31,15 +31,26 @@ export type AppConfig = {
 };
 
 export function loadConfig(): AppConfig {
+  const schoolsJsonRaw = process.env.SCHOOLS_JSON?.trim() || "[]";
+
   const env = envSchema.parse({
     PORT: process.env.PORT,
     PUBLIC_BASE_URL: process.env.PUBLIC_BASE_URL,
     SCHOOL_API_TIMEOUT_MS: process.env.SCHOOL_API_TIMEOUT_MS,
     SCHOOL_API_MODE: process.env.SCHOOL_API_MODE,
-    SCHOOLS_JSON: process.env.SCHOOLS_JSON ?? "[]",
+    SCHOOLS_JSON: schoolsJsonRaw,
   });
 
-  const parsedSchools = z.array(schoolSchema).parse(JSON.parse(env.SCHOOLS_JSON));
+  let schoolsJsonParsed: unknown;
+  try {
+    schoolsJsonParsed = JSON.parse(env.SCHOOLS_JSON);
+  } catch (error) {
+    throw new Error(
+      `SCHOOLS_JSON must be valid JSON array. Parse failed: ${(error as Error).message}`,
+    );
+  }
+
+  const parsedSchools = z.array(schoolSchema).parse(schoolsJsonParsed);
   if (parsedSchools.length === 0) {
     throw new Error(
       "SCHOOLS_JSON must contain at least one school config for MVP runtime.",
