@@ -35,4 +35,14 @@ export class VkBotGateway {
       random_id: randomInt(1, MAX_VK_RANDOM_ID),
     });
   }
+
+  async sendTextMany(schoolId: string, peerIds: number[], message: string): Promise<number> {
+    let sent = 0;
+    for (const peerId of peerIds) {
+      await this.sendText(schoolId, peerId, message);
+      sent += 1;
+    }
+
+    return sent;
+  }
 }

@@ -18,6 +18,7 @@ const envSchema = z.object({
   PUBLIC_BASE_URL: z.string().url().default("http://localhost:3000"),
   SCHOOL_API_TIMEOUT_MS: z.coerce.number().int().positive().default(5000),
   SCHOOL_API_MODE: z.enum(["mock", "http"]).default("mock"),
+  MOCK_DATA_PATH: z.string().min(1).default("./mock-data/campaigns.json"),
   SCHOOLS_JSON: z.string().min(2),
 });
 
@@ -28,6 +29,7 @@ export type AppConfig = {
   publicBaseUrl: string;
   schoolApiTimeoutMs: number;
   schoolApiMode: "mock" | "http";
+  mockDataPath: string;
   schools: SchoolConfig[];
 };
 
@@ -39,6 +41,7 @@ export function loadConfig(): AppConfig {
     PUBLIC_BASE_URL: process.env.PUBLIC_BASE_URL,
     SCHOOL_API_TIMEOUT_MS: process.env.SCHOOL_API_TIMEOUT_MS,
     SCHOOL_API_MODE: process.env.SCHOOL_API_MODE,
+    MOCK_DATA_PATH: process.env.MOCK_DATA_PATH,
     SCHOOLS_JSON: schoolsJsonRaw,
   });
 
@@ -63,6 +66,7 @@ export function loadConfig(): AppConfig {
     publicBaseUrl: env.PUBLIC_BASE_URL,
     schoolApiTimeoutMs: env.SCHOOL_API_TIMEOUT_MS,
     schoolApiMode: env.SCHOOL_API_MODE,
+    mockDataPath: env.MOCK_DATA_PATH,
     schools: parsedSchools,
   };
 }

@@ -1,0 +1,41 @@
+{
+  "schools": [
+    {
+      "_comment": "Mock-данные для ручных рассылок бота: получатели, уроки и шаблоны сообщений; используются в dev до подключения backend API.",
+      "schoolId": "01",
+      "templates": {
+        "surveyAfterLesson": "Как вам урок {lessonTitle} ({lessonDate})? Поставьте оценку от 1 до 5 в ответном сообщении.",
+        "attendanceDayBefore": "Напоминаем про уроки {date}. Подтвердите, пожалуйста, что будете на занятии.",
+        "attendanceSameDay": "Сегодня у вас занятия ({date}). Подтвердите участие в ответном сообщении."
+      },
+      "students": [
+        {
+          "studentId": "student-001",
+          "vkUserId": 100001,
+          "fullName": "Иванов Иван",
+          "className": "5A"
+        },
+        {
+          "studentId": "student-002",
+          "vkUserId": 100002,
+          "fullName": "Петрова Анна",
+          "className": "5A"
+        }
+      ],
+      "lessons": [
+        {
+          "lessonId": "lesson-001",
+          "title": "Математика",
+          "date": "2026-04-25",
+          "studentIds": ["student-001", "student-002"]
+        },
+        {
+          "lessonId": "lesson-002",
+          "title": "Русский язык",
+          "date": "2026-04-26",
+          "studentIds": ["student-001"]
+        }
+      ]
+    }
+  ]
+}

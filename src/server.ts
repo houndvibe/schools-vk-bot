@@ -1,11 +1,15 @@
 import express from "express";
 import pino from "pino";
+import { ZodError } from "zod";
 
 import { loadConfig } from "./config.js";
 import { SchoolRegistry } from "./domain/schoolRegistry.js";
+import { JsonMockCampaignsProvider } from "./integrations/jsonMockCampaignsProvider.js";
 import { createSchoolApiClient } from "./integrations/schoolApi.js";
 import { LinkRepository } from "./repositories/linkRepository.js";
+import { createMockCampaignsRouter } from "./router/mockCampaignsRouter.js";
 import { SessionRepository } from "./repositories/sessionRepository.js";
+import { CampaignsService } from "./services/campaignsService.js";
 import { createDeepLinkHandler } from "./router/deepLinkRouter.js";
 import { VkBotGateway } from "./vk/bot.js";
 import { createVkCallbackHandler } from "./vk/callbackHandler.js";
@@ -36,6 +40,12 @@ const registerFlow = new RegisterFlowService({
     }),
 });
 
+const campaignsProvider = new JsonMockCampaignsProvider(config.mockDataPath);
+const campaignsService = new CampaignsService({
+  campaignsProvider,
+  botGateway,
+});
+
 const app = express();
 app.use(express.json({ limit: "1mb" }));
 
@@ -47,6 +57,7 @@ app.get("/health", (_req, res) => {
 });
 
 app.get("/s/:schoolId", createDeepLinkHandler(schoolRegistry));
+app.use("/mock", createMockCampaignsRouter(campaignsService));
 app.post(
   "/vk/callback",
   createVkCallbackHandler({
@@ -57,6 +68,14 @@ app.post(
 );
 
 app.use((error: Error, _req: express.Request, res: express.Response, _next: express.NextFunction) => {
+  if (error instanceof ZodError) {
+    res.status(400).json({
+      error: "Validation error",
+      details: error.flatten(),
+    });
+    return;
+  }
+
   logger.error({ error }, "Unhandled error");
   res.status(500).json({ error: "Internal Server Error" });
 });
