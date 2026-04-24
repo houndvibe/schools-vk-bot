@@ -7,6 +7,10 @@ import type {
 } from "../domain/campaigns.js";
 import type { VkBotGateway } from "../vk/bot.js";
 
+// Сервис оркестрации рассылок: получает целевых учеников из CampaignsProvider,
+// применяет фильтрацию/сценарий (произвольная рассылка, опрос, напоминание)
+// и делегирует фактическую отправку сообщений в VkBotGateway.
+
 type Dependencies = {
   campaignsProvider: CampaignsProvider;
   botGateway: VkBotGateway;
@@ -15,6 +19,7 @@ type Dependencies = {
 export class CampaignsService {
   constructor(private readonly deps: Dependencies) {}
 
+  //Выбирает получателей по schoolId и vkUserIds, если переданы
   async sendArbitraryMessage(input: SendArbitraryMessageDto): Promise<CampaignSendResult> {
     const students = await this.deps.campaignsProvider.listStudentsBySchool({
       schoolId: input.schoolId,
