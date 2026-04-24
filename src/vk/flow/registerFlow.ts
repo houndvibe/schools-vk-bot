@@ -16,6 +16,8 @@ type Dependencies = {
   schoolApiFactory: (school: SchoolConfig) => SchoolApiClient;
 };
 
+//Сервис регистрации: state machine регистрации.
+
 export class RegisterFlowService {
   constructor(private readonly deps: Dependencies) {}
 

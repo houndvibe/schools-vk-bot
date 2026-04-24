@@ -11,6 +11,7 @@ import { VkBotGateway } from "./vk/bot.js";
 import { createVkCallbackHandler } from "./vk/callbackHandler.js";
 import { RegisterFlowService } from "./vk/flow/registerFlow.js";
 
+// Точка входа сервиса: собирает зависимости, настраивает маршруты и запускает HTTP-сервер.
 const logger = pino({
   level: process.env.LOG_LEVEL ?? "info",
 });

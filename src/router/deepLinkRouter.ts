@@ -2,6 +2,8 @@ import type { RequestHandler } from "express";
 
 import type { SchoolRegistry } from "../domain/schoolRegistry.js";
 
+//Генерация Диплинка в диалог VK: /s/:schoolId -> редирект на vk.com/im?...
+
 export function createDeepLinkHandler(
   schoolRegistry: SchoolRegistry,
 ): RequestHandler {

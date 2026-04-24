@@ -1,5 +1,7 @@
 import type { SchoolConfig } from "../config.js";
 
+// Централизованный реестр школ с быстрым поиском по id, slug и VK group_id.
+
 export class SchoolRegistry {
   private readonly byId = new Map<string, SchoolConfig>();
   private readonly bySlug = new Map<string, SchoolConfig>();

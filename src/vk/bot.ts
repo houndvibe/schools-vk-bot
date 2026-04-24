@@ -3,6 +3,8 @@ import { VK } from "vk-io";
 
 import type { SchoolConfig } from "../config.js";
 
+//Отправка сообщений в VK через vk-io
+
 const MAX_VK_RANDOM_ID = 2_147_483_647;
 
 export class VkBotGateway {

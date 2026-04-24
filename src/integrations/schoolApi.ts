@@ -1,5 +1,7 @@
 import { request } from "undici";
 
+// Клиент школьного API: mock режим и http режим (реальные POST-запросы).
+
 export type ResolvedStudent = {
   id: string;
   fullName: string;

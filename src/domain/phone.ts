@@ -1,5 +1,7 @@
 const NON_DIGIT = /\D+/g;
 
+// Нормализует телефон в формат E.164 (+7...) или возвращает null при невалидном вводе.
+
 export function normalizePhoneToE164(raw: string): string | null {
   const digits = raw.replace(NON_DIGIT, "");
 

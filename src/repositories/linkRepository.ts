@@ -1,3 +1,4 @@
+// In-memory хранилище привязок VK-пользователя к ученику внутри школы.
 export type UserLink = {
   schoolId: string;
   vkUserId: number;

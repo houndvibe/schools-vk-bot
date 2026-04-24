@@ -11,6 +11,7 @@ type Deps = {
   registerFlow: RegisterFlowService;
 };
 
+// Обрабатывает callback от VK: валидация школы/секрета и запуск message_new flow.
 export function createVkCallbackHandler(deps: Deps): RequestHandler {
   return async (req, res, next) => {
     try {

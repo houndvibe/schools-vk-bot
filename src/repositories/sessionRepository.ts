@@ -1,3 +1,4 @@
+// In-memory хранилище состояния шага регистрации пользователя в VK.
 export type RegistrationState = "awaiting_phone" | "linked";
 
 export type RegistrationSession = {

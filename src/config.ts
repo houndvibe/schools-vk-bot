@@ -1,6 +1,7 @@
 import "dotenv/config";
 import { z } from "zod";
 
+// Загружает и валидирует конфигурацию приложения из переменных окружения.
 const schoolSchema = z.object({
   id: z.string().min(1),
   slug: z.string().min(1),
