@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>VK Bot Test Frontend</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <main class="shell">
+      <header class="hero">
+        <div>
+          <p class="eyebrow">Тестовый интерфейс</p>
+          <h1>VK Bot</h1>
+        </div>
+        <p class="hint">
+          Ручная отправка сообщений, опросов и подтверждений уроков через mock API.
+        </p>
+      </header>
+
+      <section class="grid" aria-label="Формы рассылок">
+        <form class="card" data-endpoint="/mock/messages/send" data-kind="message">
+          <div class="card-header">
+            <h2>Произвольное сообщение</h2>
+            <span>POST /mock/messages/send</span>
+          </div>
+
+          <label>
+            School ID
+            <input name="schoolId" value="01" required />
+          </label>
+
+          <label>
+            VK User IDs
+            <input name="vkUserIds" placeholder="190077262, 100002" />
+            <small>Можно оставить пустым, тогда рассылка уйдет всем ученикам школы.</small>
+          </label>
+
+          <label>
+            Сообщение
+            <textarea name="message" rows="5" placeholder="Введите текст сообщения" required></textarea>
+          </label>
+
+          <button type="submit">Отправить сообщение</button>
+        </form>
+
+        <form class="card" data-endpoint="/mock/surveys/send" data-kind="survey">
+          <div class="card-header">
+            <h2>Опрос с оценкой</h2>
+            <span>POST /mock/surveys/send</span>
+          </div>
+
+          <label>
+            School ID
+            <input name="schoolId" value="01" required />
+          </label>
+
+          <label>
+            Lesson ID
+            <input name="lessonId" value="lesson-001" required />
+          </label>
+
+          <button type="submit">Разослать опрос</button>
+        </form>
+
+        <form class="card" data-endpoint="/mock/attendance-reminders/send" data-kind="attendance">
+          <div class="card-header">
+            <h2>Подтверждение урока</h2>
+            <span>POST /mock/attendance-reminders/send</span>
+          </div>
+
+          <label>
+            School ID
+            <input name="schoolId" value="01" required />
+          </label>
+
+          <label>
+            Дата уроков
+            <input name="date" type="date" value="2026-04-25" required />
+          </label>
+
+          <label>
+            Режим
+            <select name="mode" required>
+              <option value="day_before">За день до урока</option>
+              <option value="same_day">В день урока</option>
+            </select>
+          </label>
+
+          <button type="submit">Разослать подтверждения</button>
+        </form>
+      </section>
+
+      <section class="result-card" aria-live="polite">
+        <div class="card-header">
+          <h2>Результат</h2>
+          <button class="ghost" type="button" id="clear-result">Очистить</button>
+        </div>
+        <pre id="result">Здесь появится ответ API.</pre>
+      </section>
+    </main>
+
+    <script src="./app.js" type="module"></script>
+  </body>
+</html>

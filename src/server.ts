@@ -1,4 +1,5 @@
 import express from "express";
+import path from "node:path";
 import pino from "pino";
 import { ZodError } from "zod";
 
@@ -47,7 +48,10 @@ const campaignsService = new CampaignsService({
 });
 
 const app = express();
+const testFrontendPath = path.join(process.cwd(), "src", "test-frontend");
+
 app.use(express.json({ limit: "1mb" }));
+app.use("/test-frontend", express.static(testFrontendPath));
 
 app.get("/health", (_req, res) => {
   res.json({
