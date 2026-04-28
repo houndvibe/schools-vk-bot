@@ -1,7 +1,7 @@
 {
   "schools": [
     {
-      "schoolId": "03",
+      "schoolId": "01",
       "templates": {
         "surveyAfterLesson": "Как вам урок {lessonTitle} ({lessonDate})? Поставьте оценку от 1 до 5 в ответном сообщении.",
         "attendanceDayBefore": "Напоминаем про уроки {date}. Подтвердите, пожалуйста, что будете на занятии.",
