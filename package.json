@@ -8,7 +8,7 @@
     "dev": "tsx src/server.ts",
     "start": "node dist/server.js",
     "check": "tsc --noEmit",
-    "ngrok": "ngrok http 3000"
+    "tuna": "tuna http 3000"
   },
   "keywords": [],
   "author": "",
@@ -25,7 +25,6 @@
   "devDependencies": {
     "@types/express": "^5.0.6",
     "@types/node": "^25.6.0",
-    "ngrok": "^5.0.0-beta.2",
     "tsx": "^4.21.0",
     "typescript": "^6.0.3"
   },

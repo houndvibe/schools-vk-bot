@@ -71,4 +71,24 @@ flowchart LR
 npm run dev
 ```
 
+4. Один раз авторизуйте Tuna CLI:
+
+```powershell
+tuna login
+```
+
+Если браузерная авторизация недоступна, получите токен в личном кабинете Tuna и сохраните его:
+
+```powershell
+tuna config save-token <TOKEN>
+```
+
+5. В отдельном терминале поднимите публичный туннель через Tuna:
+
+```powershell
+npm run tuna
+```
+
+6. Скопируйте выданный Tuna HTTPS-адрес в `PUBLIC_BASE_URL`, а в VK Callback API укажите `{PUBLIC_BASE_URL}/vk/callback`.
+
 Для MVP можно оставить `SCHOOL_API_MODE=mock`.
