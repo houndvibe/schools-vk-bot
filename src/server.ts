@@ -7,6 +7,7 @@ import { loadConfig } from "./config.js";
 import { SchoolRegistry } from "./domain/schoolRegistry.js";
 import { JsonMockCampaignsProvider } from "./integrations/jsonMockCampaignsProvider.js";
 import { createSchoolApiClient } from "./integrations/schoolApi.js";
+import { CampaignResponseRepository } from "./repositories/campaignResponseRepository.js";
 import { LinkRepository } from "./repositories/linkRepository.js";
 import { createMockCampaignsRouter } from "./router/mockCampaignsRouter.js";
 import { SessionRepository } from "./repositories/sessionRepository.js";
@@ -14,6 +15,7 @@ import { CampaignsService } from "./services/campaignsService.js";
 import { createDeepLinkHandler } from "./router/deepLinkRouter.js";
 import { VkBotGateway } from "./vk/bot.js";
 import { createVkCallbackHandler } from "./vk/callbackHandler.js";
+import { CampaignResponseFlowService } from "./vk/flow/campaignResponseFlow.js";
 import { RegisterFlowService } from "./vk/flow/registerFlow.js";
 
 // Точка входа сервиса: собирает зависимости, настраивает маршруты и запускает HTTP-сервер.
@@ -25,6 +27,7 @@ const config = loadConfig();
 const schoolRegistry = new SchoolRegistry(config.schools);
 const linkRepository = new LinkRepository();
 const sessionRepository = new SessionRepository();
+const campaignResponseRepository = new CampaignResponseRepository();
 const botGateway = new VkBotGateway(config.schools);
 
 const registerFlow = new RegisterFlowService({
@@ -41,14 +44,50 @@ const registerFlow = new RegisterFlowService({
     }),
 });
 
+const campaignResponseFlow = new CampaignResponseFlowService({
+  logger,
+  botGateway,
+  campaignResponseRepository,
+  linkRepository,
+});
+
 const campaignsProvider = new JsonMockCampaignsProvider(config.mockDataPath);
 const campaignsService = new CampaignsService({
   campaignsProvider,
   botGateway,
+  campaignResponseRepository,
 });
 
 const app = express();
 const testFrontendPath = path.join(process.cwd(), "src", "test-frontend");
+const vkCallbackDebugEvents: VkCallbackDebugEvent[] = [];
+let vkCallbackDebugEventId = 0;
+
+type VkCallbackDebugEvent = {
+  id: number;
+  receivedAt: string;
+  finishedAt?: string;
+  responseStatus?: number;
+  payload: unknown;
+};
+
+const captureVkCallbackDebugEvent: express.RequestHandler = (req, res, next) => {
+  const event: VkCallbackDebugEvent = {
+    id: ++vkCallbackDebugEventId,
+    receivedAt: new Date().toISOString(),
+    payload: req.body,
+  };
+
+  vkCallbackDebugEvents.unshift(event);
+  vkCallbackDebugEvents.splice(50);
+
+  res.on("finish", () => {
+    event.finishedAt = new Date().toISOString();
+    event.responseStatus = res.statusCode;
+  });
+
+  next();
+};
 
 app.use(express.json({ limit: "1mb" }));
 app.use("/test-frontend", express.static(testFrontendPath));
@@ -60,13 +99,26 @@ app.get("/health", (_req, res) => {
   });
 });
 
+app.get("/debug/vk-callbacks", (_req, res) => {
+  res.json({
+    events: vkCallbackDebugEvents,
+  });
+});
+
+app.delete("/debug/vk-callbacks", (_req, res) => {
+  vkCallbackDebugEvents.length = 0;
+  res.status(204).send();
+});
+
 app.get("/s/:schoolId", createDeepLinkHandler(schoolRegistry));
 app.use("/mock", createMockCampaignsRouter(campaignsService));
 app.post(
   "/vk/callback",
+  captureVkCallbackDebugEvent,
   createVkCallbackHandler({
     logger,
     schoolRegistry,
+    campaignResponseFlow,
     registerFlow,
   }),
 );

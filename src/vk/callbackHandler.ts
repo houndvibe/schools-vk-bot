@@ -2,12 +2,14 @@ import type { RequestHandler } from "express";
 import pino from "pino";
 
 import type { SchoolRegistry } from "../domain/schoolRegistry.js";
+import type { CampaignResponseFlowService } from "./flow/campaignResponseFlow.js";
 import type { RegisterFlowService } from "./flow/registerFlow.js";
 import type { VkCallbackUpdate } from "./types.js";
 
 type Deps = {
   logger: pino.Logger;
   schoolRegistry: SchoolRegistry;
+  campaignResponseFlow: CampaignResponseFlowService;
   registerFlow: RegisterFlowService;
 };
 
@@ -39,6 +41,15 @@ export function createVkCallbackHandler(deps: Deps): RequestHandler {
       }
 
       if (update.type === "message_new") {
+        const handledAsCampaignResponse = await deps.campaignResponseFlow.handleMessage(
+          school,
+          update,
+        );
+        if (handledAsCampaignResponse) {
+          res.status(200).send("ok");
+          return;
+        }
+
         await deps.registerFlow.handleMessage(school, update);
       }
 
